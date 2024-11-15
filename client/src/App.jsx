@@ -16,13 +16,13 @@ import { useAppStore } from "@/store";
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
-  return isAuthenticated ? children : <Navigate to="https://profitmajdoori.vercel.app/auth" />;
+  return isAuthenticated ? children : <Navigate to="/auth" />;
 };
 
 const AuthRoute = ({ children }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
-  return isAuthenticated ? <Navigate to="https://profitmajdoori.vercel.app/chat" /> : children;
+  return isAuthenticated ? <Navigate to="/chat" /> : children;
 };
 
 function App() {
