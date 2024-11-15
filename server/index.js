@@ -1,3 +1,4 @@
+// index.js
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -14,13 +15,13 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8747;
 
-// CORS configuration - Updated to be more permissive during development
+// CORS configuration
 app.use(
   cors({
-    origin: ["https://majdooriclient.vercel.app", "http://localhost:3000"],
+    origin: "https://majdooriclient.vercel.app",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with']
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with', 'Access-Control-Allow-Origin']
   })
 );
 
@@ -29,8 +30,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Health check route
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "ok", message: "Server is running" });
 });
 
 // Routes
@@ -42,8 +43,16 @@ app.use("/api/practice-zone", practiceZoneRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something broke!' });
+  console.error("Error details:", {
+    message: err.message,
+    stack: err.stack,
+    path: req.path,
+    method: req.method
+  });
+  res.status(500).json({ 
+    error: 'Internal Server Error',
+    message: err.message 
+  });
 });
 
 // Server setup
@@ -64,7 +73,6 @@ const connectDB = async () => {
     console.log("DB Connection Successful");
   } catch (err) {
     console.error("DB Connection Error:", err);
-    // Retry connection after 5 seconds
     setTimeout(connectDB, 5000);
   }
 };
