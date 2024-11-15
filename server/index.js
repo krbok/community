@@ -20,11 +20,13 @@ const cors = require('cors');
 
 const allowedOrigins = ['https://community-iq5w.vercel.app'];
 
-app.use(cors({
-    origin: allowedOrigins,
-    credentials: true, // If you need to send cookies
-}));
-
+app.use(
+  cors({
+    origin: [process.env.ORIGIN],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true,
+  })
+);
 
 // Parse JSON requests and cookies
 app.use(express.json());
