@@ -1,3 +1,4 @@
+// App.jsx
 import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
@@ -8,7 +9,7 @@ import {
 import Profile from "@/pages/profile";
 import Chat from "@/pages/chat";
 import Auth from "@/pages/auth";
-import PracticeZone from "@/pages/practice-zone"; // Add this import
+import PracticeZone from "@/pages/practice-zone";
 import apiClient from "@/lib/api-client";
 import { GET_USERINFO_ROUTE } from "@/lib/constants";
 import { useAppStore } from "@/store";
@@ -34,6 +35,10 @@ function App() {
       try {
         const response = await apiClient.get(GET_USERINFO_ROUTE, {
           withCredentials: true,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+          },
         });
         if (response.status === 200 && response.data.id) {
           setUserInfo(response.data);
@@ -41,6 +46,7 @@ function App() {
           setUserInfo(undefined);
         }
       } catch (error) {
+        console.error('Auth error:', error);
         setUserInfo(undefined);
       } finally {
         setLoading(false);
@@ -55,7 +61,7 @@ function App() {
   }, [userInfo, setUserInfo]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
   return (
