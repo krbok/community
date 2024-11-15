@@ -8,7 +8,7 @@ import {
 import Profile from "@/pages/profile";
 import Chat from "@/pages/chat";
 import Auth from "@/pages/auth";
-import PracticeZone from "@/pages/practice-zone";
+import PracticeZone from "@/pages/practice-zone"; // Add this import
 import apiClient from "@/lib/api-client";
 import { GET_USERINFO_ROUTE } from "@/lib/constants";
 import { useAppStore } from "@/store";
@@ -32,14 +32,15 @@ function App() {
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const response = await apiClient.get(GET_USERINFO_ROUTE);
+        const response = await apiClient.get(GET_USERINFO_ROUTE, {
+          withCredentials: true,
+        });
         if (response.status === 200 && response.data.id) {
           setUserInfo(response.data);
         } else {
           setUserInfo(undefined);
         }
       } catch (error) {
-        console.error('Auth error:', error);
         setUserInfo(undefined);
       } finally {
         setLoading(false);
@@ -54,11 +55,7 @@ function App() {
   }, [userInfo, setUserInfo]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        Loading...
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
   return (
