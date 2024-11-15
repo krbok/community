@@ -11,20 +11,22 @@ import practiceZoneRoutes from "./routes/PracticeZoneRoutes.js";
 import setupSocket from "./socket.js";
 
 dotenv.config();
+
 const app = express();
 const port = process.env.PORT || 8747;
 
-// CORS configuration
+// Middleware for CORS configuration
 app.use(
   cors({
-    origin: "https://community-iq5w.vercel.app",
+    origin: "https://community-iq5w.vercel.app", // Replace with your actual frontend URL
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"]
+    credentials: true, // Allow cookies to be sent with requests
+    allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"], // Specify headers allowed in requests
+    exposedHeaders: ["Authorization"], // Expose necessary headers to frontend
   })
 );
 
-// Middleware
+// Parse JSON requests and cookies
 app.use(express.json());
 app.use(cookieParser());
 
@@ -33,24 +35,24 @@ app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok", message: "Server is running" });
 });
 
-// Routes
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/contacts", contactsRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/channel", channelRoutes);
 app.use("/api/practice-zone", practiceZoneRoutes);
 
-// Error handling middleware
+// Error handling middleware for logging and response
 app.use((err, req, res, next) => {
   console.error("Error details:", {
     message: err.message,
     stack: err.stack,
     path: req.path,
-    method: req.method
+    method: req.method,
   });
-  res.status(500).json({ 
-    error: 'Internal Server Error',
-    message: err.message 
+  res.status(500).json({
+    error: "Internal Server Error",
+    message: err.message,
   });
 });
 
@@ -59,7 +61,7 @@ const server = app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
 
-// Socket.io setup
+// Set up Socket.io
 setupSocket(server);
 
 // Database connection with retry logic
@@ -71,8 +73,8 @@ const connectDB = async () => {
     });
     console.log("DB Connection Successful");
   } catch (err) {
-    console.error("DB Connection Error:", err);
-    setTimeout(connectDB, 5000);
+    console.error("DB Connection Error:", err.message);
+    setTimeout(connectDB, 5000); // Retry connection every 5 seconds
   }
 };
 
