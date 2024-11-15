@@ -18,7 +18,7 @@ const port = process.env.PORT || 8747;
 // Middleware for CORS configuration
 const cors = require('cors');
 
-const allowedOrigins = ['https://community-iq5w.vercel.app', 'https://community-two-lake.vercel.app'];
+const allowedOrigins = ['https://community-iq5w.vercel.app'];
 
 app.use(cors({
     origin: allowedOrigins,
