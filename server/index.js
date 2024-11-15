@@ -1,4 +1,3 @@
-// index.js
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -14,7 +13,6 @@ import setupSocket from "./socket.js";
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 8747;
-const cors=require('cors')
 
 // CORS configuration
 app.use(
@@ -22,11 +20,9 @@ app.use(
     origin: "https://community-iq5w.vercel.app",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with', 'Access-Control-Allow-Origin']
+    allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"]
   })
 );
-app.options('*', cors()); // Allow preflight requests
-
 
 // Middleware
 app.use(express.json());
@@ -36,7 +32,6 @@ app.use(cookieParser());
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok", message: "Server is running" });
 });
-axios.defaults.withCredentials = true;
 
 // Routes
 app.use("/api/auth", authRoutes);
