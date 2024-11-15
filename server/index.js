@@ -7,19 +7,16 @@ import authRoutes from "./routes/AuthRoutes.js";
 import contactsRoutes from "./routes/ContactRoutes.js";
 import messagesRoutes from "./routes/MessagesRoute.js";
 import channelRoutes from "./routes/ChannelRoutes.js";
-import practiceZoneRoutes from "./routes/PracticeZoneRoutes.js";
+import practiceZoneRoutes from "./routes/PracticeZoneRoutes.js"; // New import
 import setupSocket from "./socket.js";
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 8747;
+const port = process.env.PORT;
+const databaseURL = process.env.DATABSE_URL;
 
-// Middleware for CORS configuration
-const cors = require('cors');
-
-const allowedOrigins = ['https://community-iq5w.vercel.app'];
-
+// CORS configuration
 app.use(
   cors({
     origin: [process.env.ORIGIN],
@@ -28,34 +25,25 @@ app.use(
   })
 );
 
-// Parse JSON requests and cookies
-app.use(express.json());
+// Static file serving
+app.use("/uploads/profiles", express.static("uploads/profiles"));
+app.use("/uploads/files", express.static("uploads/files"));
+
+// Middleware
 app.use(cookieParser());
+app.use(express.json());
 
-// Health check route
-app.get("/api/health", (req, res) => {
-  res.status(200).json({ status: "ok", message: "Server is running" });
-});
-
-// API routes
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/contacts", contactsRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/channel", channelRoutes);
-app.use("/api/practice-zone", practiceZoneRoutes);
+app.use("/api/practice-zone", practiceZoneRoutes); // New route
 
-// Error handling middleware for logging and response
+// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error("Error details:", {
-    message: err.message,
-    stack: err.stack,
-    path: req.path,
-    method: req.method,
-  });
-  res.status(500).json({
-    error: "Internal Server Error",
-    message: err.message,
-  });
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
 // Server setup
@@ -63,23 +51,17 @@ const server = app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
 
-// Set up Socket.io
+// Socket.io setup
 setupSocket(server);
 
-// Database connection with retry logic
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.DATABSE_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+// Database connection
+mongoose
+  .connect(databaseURL)
+  .then(() => {
     console.log("DB Connection Successful");
-  } catch (err) {
-    console.error("DB Connection Error:", err.message);
-    setTimeout(connectDB, 5000); // Retry connection every 5 seconds
-  }
-};
-
-connectDB();
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
 
 export default app;
