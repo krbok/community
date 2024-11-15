@@ -18,7 +18,7 @@ const port = process.env.PORT || 8747;
 // CORS configuration
 app.use(
   cors({
-    origin: "https://community-iq5w-nwr8s7lhs-krboks-projects.vercel.app/auth",
+    origin: "https://community-iq5w-nwr8s7lhs-krboks-projects.vercel.app",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with', 'Access-Control-Allow-Origin']
