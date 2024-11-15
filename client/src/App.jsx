@@ -1,4 +1,3 @@
-// App.jsx
 import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
@@ -33,13 +32,7 @@ function App() {
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const response = await apiClient.get(GET_USERINFO_ROUTE, {
-          withCredentials: true,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json',
-          },
-        });
+        const response = await apiClient.get(GET_USERINFO_ROUTE);
         if (response.status === 200 && response.data.id) {
           setUserInfo(response.data);
         } else {
@@ -61,7 +54,11 @@ function App() {
   }, [userInfo, setUserInfo]);
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        Loading...
+      </div>
+    );
   }
 
   return (
