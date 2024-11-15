@@ -14,16 +14,19 @@ import setupSocket from "./socket.js";
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 8747;
+const cors=require('cors')
 
 // CORS configuration
 app.use(
   cors({
-    origin: "https://community-iq5w-nwr8s7lhs-krboks-projects.vercel.app/auth",
+    origin: "https://community-iq5w.vercel.app",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with', 'Access-Control-Allow-Origin']
   })
 );
+app.options('*', cors()); // Allow preflight requests
+
 
 // Middleware
 app.use(express.json());
