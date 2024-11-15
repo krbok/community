@@ -16,15 +16,14 @@ const app = express();
 const port = process.env.PORT || 8747;
 
 // Middleware for CORS configuration
-app.use(
-  cors({
-    origin: "https://community-iq5w.vercel.app", // Replace with your actual frontend URL
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    credentials: true, // Allow cookies to be sent with requests
-    allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"], // Specify headers allowed in requests
-    exposedHeaders: ["Authorization"], // Expose necessary headers to frontend
-  })
-);
+const cors = require('cors');
+
+const allowedOrigins = ['https://community-iq5w.vercel.app']; // Add your frontend URL here
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true, // If you need to send cookies
+}));
+
 
 // Parse JSON requests and cookies
 app.use(express.json());
