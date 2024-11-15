@@ -36,6 +36,7 @@ app.use(cookieParser());
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok", message: "Server is running" });
 });
+axios.defaults.withCredentials = true;
 
 // Routes
 app.use("/api/auth", authRoutes);
