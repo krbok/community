@@ -1,5 +1,5 @@
-export const HOST = "https://community-two-lake.vercel.app";
-export const SOCKET_HOST = "https://community-two-lake.vercel.app";
+export const HOST = "https://community-iq5w.vercel.app";
+export const SOCKET_HOST = "https://community-iq5w.vercel.app";
 
 export const AUTH_ROUTES = "api/auth";
 export const LOGIN_ROUTE = `${HOST}/${AUTH_ROUTES}/login`;
