@@ -9,14 +9,20 @@
   "routes": [
     {
       "src": "/socket.io/(.*)",
-      "dest": "index.js"
+      "dest": "index.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://community-sable.vercel.app",
+        "Access-Control-Allow-Credentials": "true",
+        "Connection": "upgrade"
+      }
     },
     {
       "src": "/uploads/(.*)",
       "dest": "index.js",
       "headers": {
         "cache-control": "public, max-age=86400",
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "https://community-sable.vercel.app",
+        "Access-Control-Allow-Credentials": "true"
       }
     },
     {
@@ -28,7 +34,7 @@
       "dest": "index.js",
       "headers": {
         "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin": "https://community-sable.vercel.app",
         "Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
         "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
       }
@@ -40,5 +46,11 @@
   ],
   "env": {
     "NODE_ENV": "production"
+  },
+  "functions": {
+    "index.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
   }
 }
