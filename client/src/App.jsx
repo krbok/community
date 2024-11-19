@@ -8,40 +8,53 @@ import {
 import Profile from "@/pages/profile";
 import Chat from "@/pages/chat";
 import Auth from "@/pages/auth";
-import PracticeZone from "@/pages/practice-zone"; // Add this import
+import PracticeZone from "@/pages/practice-zone";
 import apiClient from "@/lib/api-client";
 import { GET_USERINFO_ROUTE } from "@/lib/constants";
 import { useAppStore } from "@/store";
+import { Loader2 } from "lucide-react";
+
+const LoadingSpinner = () => (
+  <div className="h-screen w-screen flex items-center justify-center">
+    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+  </div>
+);
 
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
-  return isAuthenticated ? children : <Navigate to="/auth" />;
+  return isAuthenticated ? children : <Navigate to="/auth" replace />;
 };
 
 const AuthRoute = ({ children }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
-  return isAuthenticated ? <Navigate to="/chat" /> : children;
+  return isAuthenticated ? <Navigate to="/chat" replace /> : children;
 };
 
 function App() {
   const { userInfo, setUserInfo } = useAppStore();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const getUserData = async () => {
       try {
+        setLoading(true);
         const response = await apiClient.get(GET_USERINFO_ROUTE, {
           withCredentials: true,
         });
+        
         if (response.status === 200 && response.data.id) {
           setUserInfo(response.data);
         } else {
           setUserInfo(undefined);
+          setError("Failed to get user info");
         }
       } catch (error) {
+        console.error("Auth error:", error);
         setUserInfo(undefined);
+        setError(error.message || "Authentication failed");
       } finally {
         setLoading(false);
       }
@@ -55,7 +68,11 @@ function App() {
   }, [userInfo, setUserInfo]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    console.error("Authentication error:", error);
   }
 
   return (
@@ -93,7 +110,8 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/auth" />} />
+        <Route path="/" element={<Navigate to="/chat" replace />} />
+        <Route path="*" element={<Navigate to="/auth" replace />} />
       </Routes>
     </Router>
   );
