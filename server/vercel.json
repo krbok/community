@@ -6,7 +6,11 @@
       "use": "@vercel/node",
       "config": {
         "memory": 1024,
-        "maxDuration": 60
+        "maxDuration": 60,
+        "includeFiles": [
+          "package.json",
+          "package-lock.json"
+        ]
       }
     }
   ],
