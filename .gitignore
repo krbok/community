@@ -9,7 +9,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
-/client/.env
+/client/meta.env
 /server/.env
 
 # misc
