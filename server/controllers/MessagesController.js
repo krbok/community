@@ -1,5 +1,6 @@
 import Message from "../model/MessagesModel.js";
 import { mkdirSync, renameSync } from "fs";
+import path from "path";
 
 export const getMessages = async (req, res, next) => {
   try {
@@ -28,13 +29,18 @@ export const uploadFile = async (request, response, next) => {
     if (request.file) {
       console.log("in try if");
       const date = Date.now();
-      let fileDir = `uploads/files/${date}`;
-      let fileName = `${fileDir}/${request.file.originalname}`;
 
-      // Create directory if it doesn't exist
+      // Use the writable /tmp directory in Vercel
+      const tempDir = `/tmp/${date}`;
+      const fileDir = path.join(tempDir, "files");
+      const fileName = path.join(fileDir, request.file.originalname);
+
+      // Create directory inside /tmp
       mkdirSync(fileDir, { recursive: true });
 
+      // Move file to the temporary location
       renameSync(request.file.path, fileName);
+
       return response.status(200).json({ filePath: fileName });
     } else {
       return response.status(404).send("File is required.");
